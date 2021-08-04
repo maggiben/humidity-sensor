@@ -126,28 +126,4 @@ void loop() {
     Serial.print(event.relative_humidity);
     Serial.println(F("%"));
   }
-  
-  /*
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-  delay(2000);
-  // check if returns are valid, if they are NaN (not a number) then something went wrong!
-  if(isnan(t) || isnan(h)) {
-    Serial.println("Failed to read from DHT");
-  } else {
-    Serial.print("Humidity: "); 
-    Serial.print(h);
-    Serial.print(" %\t");
-    Serial.print("Temperature: "); 
-    Serial.print(t);
-    Serial.println(" *C");
-  }
-  */
-}
-
-void printSensorData() {
-  Serial.print("   Celsius => ");
-  Serial.println(String(double(dht.celsius) / 10, 1));
-  Serial.print("   Humdity => ");
-  Serial.println(String(double(dht.humidity) / 10, 1));  
 }
