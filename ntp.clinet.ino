@@ -5,8 +5,16 @@
 // change next line to use with another board/shield
 #include <WiFiUdp.h>
 
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
 #define DHTPIN 25    // modify to the pin we connected
- 
 #define DHTTYPE DHT21   // AM2301 
  
 DHT_Unified dht(DHTPIN, DHTTYPE);
@@ -34,6 +42,13 @@ String timeStamp;
 void setup(){
   Serial.begin(115200);
   WiFi.begin(ssid, password);
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+
+  display.clearDisplay();
 
   while(WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -105,6 +120,7 @@ void loop() {
   Serial.println(timeStamp);
   
   delay(delayMS);
+  display.clearDisplay();
   // Get temperature event and print its value.
   sensors_event_t event;
   dht.temperature().getEvent(&event);
@@ -115,6 +131,15 @@ void loop() {
     Serial.print(F("Temperature: "));
     Serial.print(event.temperature);
     Serial.println(F("°C"));
+
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.setCursor(0, 10);
+    // Display static text
+    display.print(F("Temperature: "));
+    display.print(event.temperature);
+    display.println(F("*C"));
+    display.display(); 
   }
   // Get humidity event and print its value.
   dht.humidity().getEvent(&event);
@@ -125,5 +150,15 @@ void loop() {
     Serial.print(F("Humidity: "));
     Serial.print(event.relative_humidity);
     Serial.println(F("%"));
+
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.setCursor(0, 20);
+    // Display static text
+    display.print(F("Humidity: "));
+    display.print(event.relative_humidity);
+    display.println(F("%"));
+    display.display(); 
+
   }
 }
